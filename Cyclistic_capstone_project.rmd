@@ -1,0 +1,697 @@
+---
+title: "CapstoneProject"
+author: "Urtzi"
+date: "2023-01-04"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# **INTRODUCTION**
+## **Scenario** 
+
+You are a junior data analyst working in the marketing analyst team at Cyclistic, a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations. 
+
+## **Characters and teams** 
+
+* **Cyclistic**: A bike-share program that features more than 5,800 bicycles and 600 docking stations. Cyclistic sets itself apart by also offering reclining bikes, hand tricycles, and cargo bikes, making bike-share more inclusive to people with disabilities and riders who can’t use a standard two-wheeled bike. The majority of riders opt for traditional bikes; about 8% of riders use the assistive options. Cyclistic users are more likely to ride for leisure, but about 30% use them to commute to work each day. 
+
+* **Lily Moreno**: The director of marketing and your manager. Moreno is responsible for the development of campaigns and initiatives to promote the bike-share program. These may include email, social media, and other channels. 
+
+* **Cyclistic marketing analytics team**: A team of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic marketing strategy. You joined this team six months ago and have been busy learning about Cyclistic’s mission and business goals — as well as how you, as a junior data analyst, can help Cyclistic achieve them. 
+
+* **Cyclistic executive team**: The notoriously detail-oriented executive team will decide whether to approve the recommended marketing program. 
+
+## **About the company** 
+
+In 2016, Cyclistic launched a successful bike-share offering. Since then, the program has grown to a fleet of 5,824 bicycles that are geotracked and locked into a network of 692 stations across Chicago. The bikes can be unlocked from one station and returned to any other station in the system anytime. 
+
+Until now, Cyclistic’s marketing strategy relied on building general awareness and appealing to broad consumer segments. One approach that helped make these things possible was the flexibility of its pricing plans: single-ride passes, full-day passes, and annual memberships. Customers who purchase single-ride or full-day passes are referred to as casual riders. Customers who purchase annual memberships are Cyclistic members.
+
+Cyclistic’s finance analysts have concluded that annual members are much more profitable than casual riders. Although the pricing flexibility helps Cyclistic attract more customers, Moreno believes that maximizing the number of annual members will be key to future growth. Rather than creating a marketing campaign that targets all-new customers, Moreno believes there is a very good chance to convert casual riders into members. She notes that casual riders are already aware of the Cyclistic program and have chosen Cyclistic for their mobility needs. 
+
+Moreno has set a clear *goal: Design marketing strategies aimed at converting casual riders into annual members*. In order to do that, however, the marketing analyst team needs to better understand how annual members and casual riders differ, why casual riders would buy a membership, and how digital media could affect their marketing tactics. Moreno and her team are interested in analyzing the Cyclistic historical bike trip data to identify trends.
+
+# **CASE STUDY**
+
+In order to proceed with the completion of the case study, I will follow the six steps of the data analysis process: ask, prepare, process, analyse, share, and act.
+
+The six step process is one of the most common processes used by data analysts and will help me to keep my work organised and reach my goals in a concise manner.
+
+## **1.ASK**
+
+### 1.1. Asking effective questions
+
+The first step is to know what the project is about and what a successful result should look like.
+
+In order to determine these things, I first need to ask some effective questions. First, I will start with thorough questions in order to have an overview of the case study:
+
+-	**Who are the stakeholders?** Lily Moreno Marketing director (responsible for the development and initiatives of campaigns) and the executive team (the ones who will approve or disapprove the recommended plan)
+
+-	**What are their needs?** Becoming more cost-effective by fostering the annual membership.
+
+-	**What is the objective of this project?** Fostering the annual membership among casual members as well as attracting new annual members by means of a new marketing campaign.
+
+After carefully considering the questions above, I will ask more narrow questions that will help me focus on the details:
+
+-	**What are the most common trends or patterns that follow each consumer type?**
+-	**Why would casual members buy the annual membership?**
+-	**How could Cyclistic use its social media and digital marketing to induce casual members to buy the annual membership?**
+
+### **1.2. Deliverables**
+
+-	A clear summary of the business task 
+
+
+## **2. PREPARE**
+
+### Is the data selected good enough?
+
+In this phase, I will first talk about the data, whether if its good to conduct the analysis or not.
+
+In order to determine that, I will use a method called **ROCCC** that stands for "Reliable, Original, Comprehensive, Current, and Cited".
+
+* **Reliable**: The data used for this project can be found in https://divvy-tripdata.s3.amazonaws.com/index.html, which is an AWS server.
+
+* **Original**: In addition to the above, the data is open data direclty collected by Motivate, which is a company employed by the city of Chicago. Thus, we can tell the data is reliable and original.
+
+* **Comprehensive**: In order to analyse the differences between the two types of customers I will use data from the year 2022, namely, data from a whole year. There are 12 files in total, one per each month and each file contains 13 columns or variables, and millions of instances. So, data is also comprehensive.
+
+* **Current**: Data is current, from year 2022, so that we can say that it closely depicts current customers habits and preferences.
+
+* **Cited**: Data is cited.
+
+Considering these five variables are met, we can conclude the data we are working with is good enough to conduct analysis and draw reliable conclusions.
+
+### *Licensing, Priviacy, Secutiry, and Accesibility*
+
+All identifying information has been removed from this data, making it anonymous. This protects privacy, but also restricts the scope of the investigation. There is insufficient data to tell whether casual riders are repeat riders or if casual riders are Chicago residents.
+
+### *Dataset's shortcomings*
+
+Even though the data is ROCCC, there are some limitations that never hurts to keep them in mind that are mostly related to duplicated records and missing values. Notwithstanding, these limitations can be overcome by data cleaning.
+
+### **Data files format**
+
+These files are in .CSV format.
+
+# **3. PROCESS**
+
+Due to the large size of these files, RStudio will be the tool used to process and analyse the data.
+
+Within RStudio, RMarkdown will be the format used to conduct these study. This will allow me to follow consistent standars and keep the work clean and organised, as it easily allows to spot and correct the possible errors that I may encounter during the process.
+
+## **UPLOAD THE NECESSARY LIBRARIES**
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(skimr)
+library(janitor)
+library(readr)
+library(dplyr)
+library(scales)
+```
+
+## **UPLOAD THE DATASETS**
+
+```{r}
+m1_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202201-divvy-tripdata/202201-divvy-tripdata.csv")
+m2_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202202-divvy-tripdata/202202-divvy-tripdata.csv")
+m3_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202203-divvy-tripdata/202203-divvy-tripdata.csv")
+m4_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202204-divvy-tripdata/202204-divvy-tripdata.csv")
+m5_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202205-divvy-tripdata/202205-divvy-tripdata.csv")
+m6_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202206-divvy-tripdata/202206-divvy-tripdata.csv")
+m7_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202207-divvy-tripdata/202207-divvy-tripdata.csv")
+m8_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202208-divvy-tripdata/202208-divvy-tripdata.csv")
+m9_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202209-divvy-tripdata/202209-divvy-publictripdata.csv")
+m10_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202210-divvy-tripdata/202210-divvy-tripdata.csv")
+m11_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202211-divvy-tripdata/202211-divvy-tripdata.csv")
+m12_2022 <- read_csv("~/1. Professional_career/2. Self_learning/1. Google_data_analytics_program/Notes_per_course/Course8_Capstone/Project/Dataset_bike_sharing/202212-divvy-tripdata/202212-divvy-tripdata.csv")
+```
+
+## **WRANGLING DATA AND COMBINING IT INTO A SIGNLE FILE**
+
+In order to unite the different tables, we need to make sure the column names are the same, they do not need to be in the exact same order though.
+
+```{r}
+colnames(m1_2022)
+colnames(m2_2022)
+colnames(m3_2022)
+colnames(m4_2022)
+colnames(m5_2022)
+colnames(m6_2022)
+colnames(m7_2022)
+colnames(m8_2022)
+colnames(m9_2022)
+colnames(m10_2022)
+colnames(m11_2022)
+colnames(m12_2022)
+```
+Column names from each and every month fit with each other, so we do not need to make any adjustments in order to bind each file/table and convert all tables in just one table for the entire 2022 year.
+
+Next, we will look for the incongruences that each table may have.
+
+```{r}
+str(m1_2022)
+str(m2_2022)
+str(m3_2022)
+str(m4_2022)
+str(m5_2022)
+str(m6_2022)
+str(m7_2022)
+str(m8_2022)
+str(m9_2022)
+str(m10_2022)
+str(m11_2022)
+str(m12_2022)
+```
+It seems there are no incongruences as to the data types. Notwithstanding, we will make sure the columns "ride_id, rideable_type, and member_casual" are **chr** data types.
+
+
+```{r}
+
+to_chr <- function(dataset) {
+  mutate(dataset, ride_id=as.character(ride_id), rideable_type=as.character(rideable_type), member_casual=as.character(member_casual))
+}
+
+to_chr(m1_2022)
+to_chr(m2_2022)
+to_chr(m3_2022)
+to_chr(m4_2022)
+to_chr(m5_2022)
+to_chr(m6_2022)
+to_chr(m7_2022)
+to_chr(m8_2022)
+to_chr(m9_2022)
+to_chr(m10_2022)
+to_chr(m11_2022)
+to_chr(m12_2022)
+```
+
+Observe unique values for the following variables: ride_id, rideable_type, member_casual
+
+```{r}
+check_data_integrity <- function(datasets) {
+  num_distinct_obs <- n_distinct(datasets$ride_id)
+  unique_bike_types <- unique(datasets$rideable_type)
+  unique_rider_types <- unique(datasets$member_casual)
+  
+  return_this <- c("BIKE TYPES:", unique_bike_types, 
+                   "RIDER TYPES:", unique_rider_types,
+                   "UNIQUE OBSERVATIONS:", num_distinct_obs)
+  return(return_this)
+}
+
+check_data_integrity(m1_2022)
+check_data_integrity(m2_2022)
+check_data_integrity(m3_2022)
+check_data_integrity(m4_2022)
+check_data_integrity(m5_2022)
+check_data_integrity(m6_2022)
+check_data_integrity(m7_2022)
+check_data_integrity(m8_2022)
+check_data_integrity(m9_2022)
+check_data_integrity(m10_2022)
+check_data_integrity(m11_2022)
+check_data_integrity(m12_2022)
+
+```
+
+Once having run the code above, we can tell three things:
+
+1. Each row is unique and there are no duplicate ride_ids due to the data privacy terms mentioned before.
+
+2. There are just three types of bike: electric, classic, and docked bikes.
+
+3. There are two types of customers: Members and casuals.
+
+## **CREATING ONE SINGLE FILE OR TABLE**
+
+Now that we've checked all variables have the same name, we will proceed to binding the rows to create one single table out of the 12 tables we currently have.
+
+```{r}
+
+bike_data_2022 <- bind_rows(m1_2022,m2_2022,m3_2022,m4_2022,m5_2022,m6_2022,m7_2022,m8_2022,m9_2022,m10_2022,m11_2022,m12_2022)
+
+```
+
+And we will remove individual data frames to make the global environment clearer.
+
+```{r}
+rm(m1_2022)
+rm(m2_2022)
+rm(m3_2022)
+rm(m4_2022)
+rm(m5_2022)
+rm(m6_2022)
+rm(m7_2022)
+rm(m8_2022)
+rm(m9_2022)
+rm(m10_2022)
+rm(m11_2022)
+rm(m12_2022)
+```
+
+## **CREATING NEW COLUMNS**
+
+So as to make a refine and deepen the analysis, we will create new variables out of the date and latitude/longitude variables.
+
+* We will calculate the trip duration
+* We will create new columns for year, month and weekdays.
+
+The ride_duration is, per se, a difftime format variable, which could give us problems when calculating the mean and median, among others. Therefore, when creating this variable, we will directly convert it to a numeric format.
+
+```{r}
+bike_data_2022 <- bike_data_2022 %>%
+  mutate(ride_duration = as.numeric(difftime(ended_at, started_at, units = "hours"))) %>% #extract duration
+  mutate(year = format(as.Date(started_at), "%Y")) %>% # extract year
+  mutate(month = format(as.Date(started_at), "%B")) %>% #extract month
+  mutate(day = format(as.Date(started_at), "%d")) %>% # extract date
+  mutate(day_of_week = format(as.Date(started_at), "%A")) %>%
+  mutate(hour = strftime(started_at, "%H"))
+```
+
+
+```{r}
+class(bike_data_2022$ride_duration)
+```
+
+
+```{r}
+
+colnames(bike_data_2022)[17] <- "day_num"
+
+```
+
+Lastly, we will create a new variable:
+
+* We will calculate the ride distance (in km) from the variables lat and long.
+
+```{r}
+library(geosphere)
+
+bike_data_2022 <- bike_data_2022 %>%
+  mutate(ride_distance = distGeo(matrix(c(start_lng, start_lat), ncol = 2), matrix(c(end_lng, end_lat), ncol = 2)))
+
+bike_data_2022$ride_distance <- bike_data_2022$ride_distance/1000
+
+```
+
+We could also round up the ride_distance variable, nevertheless, if we do so, the variable automatically gets converted to a character and we couldn't use it to make calculations.
+
+The command to round the variable would be the following:
+
+"bike_data_2022 <-  bike_data_2022 %>%
+  mutate(ride_distance=format(round(ride_distance, 3), nsmall=3))"
+  
+## **CREATING A CLEANED DATA TABLE TO WORK WITH FOR ANALYSIS**
+
+We will first create a table to work with for the analysis. Once done this, we will analyse the summary of the cleaned data.
+
+```{r}
+cleaned_data_2022 <- bike_data_2022
+```
+
+```{r}
+summary(cleaned_data_2022)
+```
+
+```{r}
+cleaned_data_2022 %>%
+  summarise(mean_duration = mean(ride_duration, na.rm = TRUE), median_duration = median(ride_duration, na.rm = TRUE))
+```
+
+Lastly, we will check if there are any instances with minus values for the ride_duration variable. If so, we will clean up the instances with a ride_duration less than 0 hours. In order to do this, all rows with a minus value will be converted to "" or null values.
+
+```{r}
+filter_ride_duration <- cleaned_data_2022 %>%
+  filter(ride_duration < 0)
+```
+
+```{r}
+cleaned_data_2022 <- cleaned_data_2022 %>%
+  mutate(ride_duration = replace(ride_duration, which(ride_duration == 'NA'), "")) %>%
+  mutate(ride_duration = replace(ride_duration, which(ride_duration < 0), ""))
+```
+
+Once having glimpsed the cleaned data table and made sure that all data is correct, we will proceed to analysing the data.
+
+# **4. DATA ANALYSIS**
+
+## **DESCRIPTIVE ANALYSIS**
+
+We will first summarise the data of some variables by conducting descriptive analysis.
+
+```{r}
+
+cleaned_data_2022 %>% 
+  summarise(average_ride_duration = mean(ride_duration, na.rm = TRUE), median_duration = median(ride_duration, na.rm = TRUE), max_ride_duration = max(ride_duration, na.rm = TRUE), min_ride_duration = min(ride_duration, na.rm = TRUE),average_day_num = mean(day_num, na.rm = TRUE), median_day_num  = median(day_num, na.rm = TRUE), 
+            max_day_num = max(day_num, na.rm = TRUE), min_day_num = min(day_num, na.rm = TRUE), average_day_of_week = mean(day_of_week, na.rm = TRUE), max_day_of_week = max(day_of_week, na.rm = TRUE), min_day_of_week = min(day_of_week, na.rm = TRUE))
+  
+```
+
+## **PLOTTING CASUAL USERS VS MEMBERS**
+
+* Members vs casual riders difference depending on total rides taken
+
+```{r}
+library(ggplot2)
+
+cleaned_data_2022 %>% 
+    group_by(member_casual) %>% 
+    summarise(ride_count = length(ride_id), ride_percentage = (length(ride_id) / nrow(cleaned_data_2022)) * 100)
+
+cleaned_data_2022 %>%
+  ggplot() + geom_bar(aes(x = member_casual, fill = member_casual)) +
+  labs(x="Casuals vs Members", y="Number Of Rides", title= "Casuals vs Members distribution", caption = 'Data collected by Cylcistic, 2022')
+  
+```
+
+* We can see on the Casuals vs Members distribution chart that casual members account for 40.96% of the riders, while the members account for 59.03%. Thus, members have almost 14% more weight than casual riders, which is a good point for the company even though they still have to attract more members.
+
+
+## **PLOTTING RIDE LENGTH ~ MEMBERS_CASUAL**
+
+```{r}
+class(cleaned_data_2022$ride_duration)
+```
+```{r}
+class(cleaned_data_2022$ride_duration)
+
+cleaned_data_2022$ride_duration <- as.numeric(cleaned_data_2022$ride_duration)
+```
+
+
+```{r}
+# Average ride_duration by member_casual
+
+avg_ride_duration <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$member_casual, FUN = mean)
+
+ggplot(avg_ride_duration) +
+  geom_col(aes(x = `cleaned_data_2022$member_casual`, 
+                        y = `cleaned_data_2022$ride_duration`,
+                        fill = `cleaned_data_2022$member_casual`)) +
+  xlab("Rider type") + ylab("Average ride duration (in hours)") +
+  labs(title = "Average Ride Duration by Rider Type",
+       caption="Data collected by Cyclistic, 2022", 
+       fill = "Rider type")  + scale_fill_viridis_d()
+
+# Total ride_duration by rider_type
+sum_ride_duration <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$member_casual, FUN = sum)
+
+ggplot(sum_ride_duration) +
+  geom_col(aes(x = `cleaned_data_2022$member_casual`, 
+                        y = `cleaned_data_2022$ride_duration`,
+                        fill = `cleaned_data_2022$member_casual`)) +
+  xlab("Rider type") + ylab("SUM ride duration (in hours)") +
+  labs(title = "SUM Ride Duration by Rider Type",
+       caption = "Data collected by Cyclistic, 2022", 
+       fill = "Rider type")  + scale_fill_viridis_d()
+
+# Total trips by rider_type
+
+cleaned_data_2022 %>%
+  ggplot() +
+  geom_bar(aes(x=member_casual, fill=member_casual)) +
+  labs(x='Rider type', y='Number of trips', title='Number of trips per rider type', fill='Rider type') + scale_color_viridis_d()
+
+# Ride_duration ~ Rider_type data summarised in a table
+
+cleaned_data_2022 %>%
+  group_by(member_casual) %>%
+  summarise(avg_ride_duration = mean(ride_duration, na.rm = TRUE), median_ride_duration = median(ride_duration, na.rm = TRUE), max_ride_duration = max(ride_duration, na.rm = TRUE), min_ride_duration = min(ride_duration, na.rm = TRUE))
+
+```
+
+Looking at the plots, we can clearly see that even though there are more members than casual riders, casual riders take longer rides and the bikes are more used by the latter. Therefore, this could mean that occasional users tend to be tourists or people who use bicycles to visit the city and make longer journeys for sightseeing, while members tend to use bicycles for commuting.
+
+## **NUMBER OF RIDES BY BIKE TYPE AND RIDER TYPE**
+
+```{r}
+
+# SUMMARY TABLE 
+
+cleaned_data_2022 %>% 
+    group_by(rideable_type) %>% 
+    summarise(bike_type = length(rideable_type), percentage_bike_type = length(rideable_type) / nrow(cleaned_data_2022) * 100) 
+
+```
+
+
+```{r}
+
+# Total number of rides by bike_type
+
+tabyl(cleaned_data_2022, rideable_type) %>%
+  adorn_pct_formatting(digits = 2)
+
+  ## A fully-featured alternative to table(). Results are data.frames and can be formatted and enhanced with janitor's family of adorn_ functions. Specify a data.frame and the one, two, or three unquoted column names you want to tabulate. Three variables generates a list of 2-way tabyls, split by the third variable.
+
+ggplot(cleaned_data_2022) + 
+  geom_bar(mapping = aes(x = rideable_type, fill = rideable_type)) +
+  xlab("Bike Type") + ylab("Number of Rides") +
+  labs(title = "Number of Rides by Bike Type",
+       caption = "Data collected by Cyclistic, 2022",
+       fill = "Bike type") + scale_fill_viridis_d() + facet_grid(~member_casual)
+
+## Numeric columns get multiplied by 100 and formatted as percentages according to user specifications. This function defaults to excluding the first column of the input data.frame, assuming that it contains a descriptive variable, but this can be overridden by specifying the columns to adorn in the ... argument. 
+```
+
+## **AVERAGE RIDE LENGTH BY BIKE TYPE**
+
+```{r}
+
+avg_ride_duration <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$rideable_type + cleaned_data_2022$member_casual, FUN = mean)
+
+# In order to use the aggregate function for mean in R, you will need to specify the numerical variable on the first argument, the categorical (as a list) on the second and the function to be applied (in this case mean) on the third. An alternative is to specify a formula of the form: numerical ~ categorical.
+
+ggplot(avg_ride_duration) +
+  geom_col(mapping = aes(x = `cleaned_data_2022$rideable_type`, y = `cleaned_data_2022$ride_duration`, fill = `cleaned_data_2022$rideable_type`)) +
+  labs(x = 'Bike Type', y = 'Ride duration', title = "Average ride duration per bike type", fill = 'Rideable bike', caption = "Data collected by Cyclistic, 2022") +
+  facet_grid(~`cleaned_data_2022$member_casual`)
+  
+```
+
+```{r}
+
+sum_ride_duration <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$rideable_type + cleaned_data_2022$member_casual, FUN = sum)
+
+ggplot(sum_ride_duration) +
+  geom_col(mapping = aes(x = `cleaned_data_2022$rideable_type`, y = `cleaned_data_2022$ride_duration`, fill = `cleaned_data_2022$rideable_type`)) +
+  labs(x = 'Bike Type', y = 'Ride duration', title = "Sum ride duration per bike type", fill = 'Rideable bike', caption = "Data collected by Cyclistic, 2022") +
+  facet_grid(~`cleaned_data_2022$member_casual`)
+  
+```
+```{r}
+
+# Check if there are any members using a docked_bike
+
+cleaned_data_2022 %>%
+  filter(member_casual == 'member' & rideable_type == 'docked_bike')
+```
+
+```{r}
+
+# Summarising the plot in a table
+
+avg_ride_duration <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$rideable_type + cleaned_data_2022$member_casual, FUN = mean)
+
+print(avg_ride_duration)
+```
+
+## **RIDES NUMBER PER DAY OF THE WEEK**
+
+```{r}
+
+# Create levels to later orther the summary table by day of week
+
+cleaned_data_2022$day_of_week <- ordered(cleaned_data_2022$day_of_week, 
+                                    levels=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+# Summary table by member type and day of week
+
+cleaned_data_2022 %>%
+  group_by(member_casual, day_of_week) %>%
+  summarise(ride_num = length(ride_id), ride_num_percent = length(ride_id) / nrow(cleaned_data_2022) * 100)
+
+```
+
+```{r}
+
+# Create a tabyl to quickly view the percentage of rides per day of week
+
+library(scales)
+
+cleaned_data_2022 %>%
+  tabyl(day_of_week) %>%
+  adorn_pct_formatting(digits = 2) %>%
+  adorn_totals(c('row'))
+
+
+```
+
+```{r}
+# Creating a plot to visualise the number of rides per day of week
+
+cleaned_data_2022 %>%
+ggplot() +
+  geom_bar(aes(x = day_of_week, fill = day_of_week)) +
+  labs(x = 'Day of week', y = 'Number of rides', title = 'Number of rides per day of week', fill = 'Day of week') + facet_grid(~member_casual) + theme(axis.text.x = element_text(angle = 35))
+  
+```
+
+The plot shows that casual riders rent more bikes during the weekends, while members use them more during weekdays. This goes along with the previously stated, it might be that casual members are often tourists that rent bikes to go sightseeing, while members are citizens that use the bikes to commute rather than going for a bike ride.
+
+```{r}
+# Creating a plot to visualise the average num of ride per day of week
+
+avg_duration_day <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$day_of_week + cleaned_data_2022$member_casual, FUN = mean)
+
+ggplot(avg_duration_day) +
+  geom_col(mapping = aes(x = `cleaned_data_2022$day_of_week`, y = `cleaned_data_2022$ride_duration`, fill = `cleaned_data_2022$day_of_week`)) +
+  labs(x = 'Day of week', y = 'Ride duration', title = "Average ride duration per day", fill = 'Day of week', caption = "Data collected by Cyclistic, 2022") +
+  facet_grid(~`cleaned_data_2022$member_casual`) + theme(axis.text.x = element_text(angle = 45))
+
+```
+The graph shows that the average journey time is longer at weekends, regardless of the type of user. This may be in line with what we have said above, i.e. that during weekends cyclists spend more time sightseeing or taking a more pleasant bike ride, as they can be more free. Notwithstanding, it is worth highlighting that in the case of casual members, they take longer rides on Monday, which should be studied further.
+
+```{r}
+ggplot(cleaned_data_2022) +
+  geom_col(mapping = aes(x = day_of_week, y = ride_duration, fill = day_of_week)) +
+  labs(x = 'Day of week', y = 'Ride duration', title = "Total ride duration per day", fill = 'Day of week', caption = "Data collected by Cyclistic, 2022") +
+  facet_grid(~member_casual) + theme(axis.text.x = element_text(angle = 45))
+```
+
+
+```{r}
+avg_dur_day <- cleaned_data_2022 %>%  
+  group_by(member_casual, day_of_week) %>% 
+  summarise(average_ride_duration = mean(ride_duration), .groups="drop") %>%
+  ggplot(aes(x = day_of_week, y = average_ride_duration, fill = member_casual)) +
+  geom_col(width=0.5, position = position_dodge(width=0.5)) + 
+  labs(title ="Average ride time by Members and Casual riders Vs. Day of the week")
+```
+
+
+## **RIDES NUMBER PER MONTH**
+
+```{r}
+
+tabyl(cleaned_data_2022, month) %>%
+  adorn_pct_formatting(digits = 2) %>%
+  adorn_totals('row')
+
+```
+
+```{r}
+
+cleaned_data_2022$month <- ordered(cleaned_data_2022$month, levels = c("January", 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'))
+
+cleaned_data_2022 %>%
+  ggplot() +
+  geom_bar(aes(x = month, fill = month)) +
+  labs(x = 'Month', y = 'Number of rides', title = 'Number of rides per month', fill = 'Month') + scale_fill_viridis_d() + theme(axis.text.x = element_text(angle = 45)) + facet_grid(~member_casual)
+```
+
+Looking at the plots we can clearly notice a normal distribution pattern, where more bikes are rented during the summer than during winter. This could be related to the weather as well as the holidays and more free time that riders may have during the summer.
+
+```{r}
+avg_duration_month <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$month + cleaned_data_2022$member_casual, FUN = mean)
+
+  ggplot(avg_duration_month) +
+    geom_col(aes(x=`cleaned_data_2022$month`, y=`cleaned_data_2022$ride_duration`, fill=`cleaned_data_2022$month`)) + labs(x='Month', y='Avg ride duration', title = 'Avg ride duration per month', fill='Month') + scale_fill_viridis_d() + facet_grid(~`cleaned_data_2022$member_casual`) + theme(axis.text.x = element_text(angle = 45))
+  
+```
+As to the average ride length per month, at least at first glance, not clear pattern is discernable for casual riders. Concerning members, there is a slight increase in the average ride duration of trips during the summer.
+
+In addition, it is clearly visible that casual riders' average ride duration is significantly longer than that of members.
+
+## **RIDES NUMBER PER HOUR**
+
+```{r}
+
+avg_duration_hour <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$hour + cleaned_data_2022$member_casual, FUN = mean)
+
+  ggplot(avg_duration_hour) +
+    geom_col(aes(x=`cleaned_data_2022$hour`, y=`cleaned_data_2022$ride_duration`, fill=`cleaned_data_2022$hour`)) + labs(x='Hour', y='Avg ride duration', title = 'Avg ride duration per Hour', fill='Hour') + scale_fill_viridis_d() + facet_grid(~`cleaned_data_2022$member_casual`) + theme(axis.text.x = element_text(angle = 45, size = 5))
+  
+```
+
+```{r}
+
+total_duration_hour <- aggregate(cleaned_data_2022$ride_duration ~ cleaned_data_2022$hour + cleaned_data_2022$member_casual, FUN = sum)
+
+  ggplot(total_duration_hour) +
+    geom_col(aes(x=`cleaned_data_2022$hour`, y=`cleaned_data_2022$ride_duration`, fill=`cleaned_data_2022$hour`)) + labs(x='Hour', y='Total ride duration', title = 'Total ride duration per Hour', fill='Hour') + scale_fill_viridis_d() + facet_grid(~`cleaned_data_2022$member_casual`) + theme(axis.text.x = element_text(angle = 45, size = 5))
+  
+```
+
+
+```{r}
+ggplot(cleaned_data_2022) +
+    geom_bar(aes(x=hour, fill= hour)) + labs(x='Hour', y='Bike ride demand', title = 'Bike ride demand per Hour', fill='Hour') + scale_fill_viridis_d() + facet_grid(~member_casual) + theme(axis.text.x = element_text(angle = 45, size = 5))
+```
+
+If we stop to analyse the three previous graphs related to bike rides information by time of day, we can highlight three main conclusions:
+
+* The peak hours for bike rental are in the afternoon, between 16:00 and 21:00. In addition, we see a clear drop in demand for bicycle rental between 3am and 7am.
+
+* It is curious that the largest average ride time happens right in the off-peak hours. This might be either because the bike station is closed at that time or because it is too late and the riders prefer to keep the bike.
+
+* Due to the fact that the difference between the bike rental demand is much larger between peak and off-peak hours than the difference between the average ride duration between the peak and off-peak hours, the total bike ride duration graph is akin to the bike rental demand graph.
+
+```{r}
+ggplot(cleaned_data_2022) +
+    geom_bar(aes(x=hour, fill=member_casual)) + labs(x='Hour', y='Bike ride demand', title = 'Bike ride demand per Hour', fill='Rider type') + scale_fill_viridis_d() + facet_wrap(~day_of_week) + theme(axis.text.x = element_text(angle = 45, size = 5))
+```
+
+Lastly, we can plainly spot a difference between the weekdays and weekends. While there are two peaks (one significantly sharper than the other) during weekdays. There is just one peak, so to speak (as it more closely resembles a normal distribution), during weekends.
+
+Furthermore, while it seems that during weekdays bikes are used more by members, during weekends are more used by casual riders.
+
+## **5.SHARE**
+
+**Key tasks**
+
+* Determine the best way to share your findings.
+* Create effective data visualizations.
+* Present your findings.
+* Ensure your work is accessible.
+
+**Deliverables**
+
+*Supporting visualizations and key findings
+
+*Key insights*
+
+* Although members use bikes more often and there are more members than casual riders, overall, casual riders spend more time riding the rental bikes. 
+
+* Bike rental demand increases considerably during the summer, which may be related to warm or better weather and holidays period.
+
+* Bike rental demand also increases during the afternoon and weekends. Notwithstanding, members tend to use bikes more during weekdays, probably for commuting, and casual riders tend to rent more bikes on weekends, probably for sightseeing.
+
+* While the most frequently used bike type by casual riders is the classic bike, the docked bike is the bike that is used for longer rides. As to the members, they do not use docked bikes but electric and classic bikes. Although this should be studied further, the reason for this could be related to the fact that docked bikes are cheaper and exclusive for casual riders who might take the bike for sightseeing.
+
+Members have more preference for classic bikes followed by electric bikes. The classic bike is the most popular bike type for both casual riders and members.
+
+# **6. Act**
+
+Act phase will be done by the Cyclistic's executive team, Director of Marketing (Lily Moreno), Marketing Analytics team on the basis of my analysis. (Data-driven decision making)
+
+**Deliverable**
+
+* Your top three recommendations based on your analysis
+
+**My personal takeaways and conclusions**
+
+* Launch an special membership for weekends in order to entice casual users to become members.
+
+* Offer discounts and other facilities for members as a gesture of gratitude, e.g., free trials or x amount of hours per month to test electric bikes.
+
+* Increase bike rental prices at peak hours, so that the annual membership becomes even more economic and casual riders are attracted to purchase the membership.
